@@ -1,5 +1,6 @@
 mod task;
 
+use std::fmt::Display;
 use chrono::{DateTime};
 use chrono::offset::Local;
 use std::io::{self, Write};
@@ -7,7 +8,7 @@ use task::{Task, TaskList};
 
 
 fn main() {
-    let mut task_list = TaskList::load_task_list();
+    let mut task_list = TaskList::<String>::load_task_list();
     let mut buffer = String::new();
     loop {
         match prompt_user().as_str() {
@@ -29,14 +30,14 @@ fn prompt_user() -> String {
     };
 }
 
-fn prompt_user_to_add_task(task_list: &mut TaskList) {
+fn prompt_user_to_add_task(task_list: &mut TaskList<String>) {
     loop {
         print!("Enter task name: ");
         io::stdout().flush();
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
             Ok (_) => {
-                task_list.add_task(input.trim());
+                task_list.add_task(String::from(input));
                 break;
             }
             Err (_) => continue,
@@ -44,7 +45,7 @@ fn prompt_user_to_add_task(task_list: &mut TaskList) {
     }
 }
 
-fn prompt_user_to_delete_task(task_list: &mut TaskList) {
+fn prompt_user_to_delete_task(task_list: &mut TaskList<String>) {
     loop {
         task_list.print_list();
         print!("Task index to delete: ");

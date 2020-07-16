@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use chrono::{DateTime, Local};
 
 enum TaskStatus {
@@ -14,27 +15,27 @@ impl std::fmt::Display for TaskStatus {
     }
 }   
 
-pub struct Task {
+pub struct Task<T: Display> {
     status: TaskStatus,
     date_time_created: DateTime<Local>,
-    task_description: String
+    task_description: T
 }
 
-impl Task {
-    fn create_task (from_task_description: &str) -> Task {
+impl<T: Display> Task<T> {
+    fn create_task (from_task_description: T) -> Task<T> {
         Task { 
             status: TaskStatus::Pending, 
             date_time_created: Local::now(), 
-            task_description: String::from(from_task_description)
+            task_description: from_task_description
         }
     }
 }
-pub struct TaskList {
-    task_vec: Vec<Task>
+pub struct TaskList<T: Display> {
+    task_vec: Vec<Task<T>>
 }
 
-impl TaskList {
-    pub fn load_task_list() -> TaskList {
+impl<T: Display> TaskList<T> {
+    pub fn load_task_list() -> TaskList<T> {
         TaskList { task_vec: Vec::new() }
     }
     pub fn print_list(&self) {
@@ -42,7 +43,7 @@ impl TaskList {
             println!("[{}] Description: {}, Status: {}, Added: {}", idx, task.task_description, task.status, task.date_time_created);
         }
     }
-    pub fn add_task(&mut self, task_description: &str) {
+    pub fn add_task(&mut self, task_description: T) {
         self.task_vec.push(Task::create_task(task_description));
     }
     pub fn delete_task(&mut self, idx: usize) -> bool {
