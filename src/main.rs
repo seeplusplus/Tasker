@@ -1,14 +1,3 @@
-// program runs and shows a list of tasks
-// DONE:
-//  + add a task
-//  + delete a task
-// TODO:
-//  + mark a task as complete
-//  + view tasks
-//     + pending or completed
-//  + save on quit
-//  + load on run
-
 mod task;
 
 use chrono::{DateTime};
