@@ -1,25 +1,36 @@
 mod task;
 
-use std::fmt::Display;
 use chrono::{DateTime};
 use chrono::offset::Local;
+
+use serde_json::json;
+
+use std::fmt::Display;
+use std::fs;
 use std::io::{self, Write};
+
+
 use task::{Task, TaskList};
 
-
+struct Config {
+}
+impl Config {
+    const TASK_FILE: &'static str = "./tasks.json";
+}
 fn main() {
-    let mut task_list = TaskList::<String>::load_task_list();
+    let mut task_list = load_task_list();
     let mut buffer = String::new();
     loop {
         match prompt_user().as_str() {
             "a" => prompt_user_to_add_task(&mut task_list),
-            "p" => task_list.print_list(),
+            "p" => print_user_task_list(&task_list),
             "d" => prompt_user_to_delete_task(&mut task_list),
             "q" => break,
             _ => continue,
         }
         buffer.clear();
     }
+    write_task_list(&task_list);
 }
 fn prompt_user() -> String {
     println!("Menu:\n(a)dd a task\n(p)rint the list of tasks\n(q)uit");
@@ -71,5 +82,33 @@ fn prompt_user_to_delete_task(task_list: &mut TaskList<String>) {
             }
             Err (_) => continue,
         }
+    }
+}
+
+fn print_user_task_list(task_list: &TaskList<String>) {
+    task_list.print_list();
+}
+
+fn load_task_list() -> TaskList<String> {
+    let contents: String;
+    match fs::read_to_string(Config::TASK_FILE) {
+        Ok(s) => contents = s,
+        Err(err) => contents = String::new(),
+    }
+    match serde_json::from_str(contents.as_str()) {
+        Ok(t) => t,
+        Err(err) => TaskList::<String>::load_task_list(),
+    }
+}
+
+fn write_task_list (task_list: &TaskList<String>) {
+    match serde_json::to_string(&task_list) {
+        Ok(s) => {
+            match fs::write(Config::TASK_FILE, s) {
+                Ok(_) => {},
+                Err(_) => {},
+            }
+        },
+        Err(_) => {},
     }
 }

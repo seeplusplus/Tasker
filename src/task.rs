@@ -1,6 +1,9 @@
 use std::fmt::Display;
+use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Local};
 
+#[derive(Serialize)]
+#[derive(Deserialize)]
 enum TaskStatus {
     Pending,
     Completed
@@ -15,6 +18,8 @@ impl std::fmt::Display for TaskStatus {
     }
 }   
 
+#[derive(Serialize)]
+#[derive(Deserialize)]
 pub struct Task<T: Display> {
     status: TaskStatus,
     date_time_created: DateTime<Local>,
@@ -30,6 +35,9 @@ impl<T: Display> Task<T> {
         }
     }
 }
+
+#[derive(Serialize)]
+#[derive(Deserialize)]
 pub struct TaskList<T: Display> {
     task_vec: Vec<Task<T>>
 }
