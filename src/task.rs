@@ -43,18 +43,18 @@ pub struct TaskList<T: Display> {
 }
 
 impl<T: Display> TaskList<T> {
-    pub fn load_task_list() -> TaskList<T> {
+    pub fn new() -> TaskList<T> {
         TaskList { task_vec: Vec::new() }
     }
-    pub fn print_list(&self) {
+    pub fn print(&self) {
         for (idx, task) in self.task_vec.iter().enumerate() {
             println!("[{}] Description: {}, Status: {}, Added: {}", idx, task.task_description, task.status, task.date_time_created);
         }
     }
-    pub fn add_task(&mut self, task_description: T) {
+    pub fn add(&mut self, task_description: T) {
         self.task_vec.push(Task::create_task(task_description));
     }
-    pub fn delete_task(&mut self, idx: usize) -> bool {
+    pub fn remove(&mut self, idx: usize) -> bool {
         println!("{}", idx);
         println!("{}", idx >= (self.task_vec.len() - 1));
         if idx >= (self.task_vec.len() - 1) { 
