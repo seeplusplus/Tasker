@@ -1,7 +1,7 @@
 mod task;
 
-use chrono::{DateTime};
 use chrono::offset::Local;
+use chrono::DateTime;
 
 use serde_json::json;
 
@@ -11,17 +11,15 @@ use std::fs;
 use std::io::{self, Write};
 use std::path;
 
-
 use task::{Task, TaskList};
 
-struct Config {
-}
+struct Config {}
 impl Config {
-    fn get_task_file () -> io::Result<path::PathBuf> {
-        let mut my_path = env::current_exe()?;
-        my_path.pop();
-        my_path.push("tasks.json"); 
-        Ok(my_path)
+    fn get_task_file() -> io::Result<path::PathBuf> {
+        let mut json_path = env::current_exe()?;
+        json_path.pop();
+        json_path.push("tasks.json");
+        Ok(json_path)
     }
 }
 
@@ -42,10 +40,10 @@ fn main() {
 }
 fn prompt_user() -> String {
     println!("Menu:\n(a)dd a task\n(p)rint the list of tasks\n(q)uit");
-    let mut input = String::new(); 
+    let mut input = String::new();
     match io::stdin().read_line(&mut input) {
         Ok(_) => return String::from(input.trim()),
-        Err (_) => return String::new(),
+        Err(_) => return String::new(),
     };
 }
 
@@ -55,11 +53,11 @@ fn prompt_user_to_add_task(task_list: &mut TaskList<String>) {
         io::stdout().flush();
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
-            Ok (_) => {
+            Ok(_) => {
                 task_list.add(String::from(input.trim()));
                 break;
             }
-            Err (_) => continue,
+            Err(_) => continue,
         }
     }
 }
@@ -71,24 +69,23 @@ fn prompt_user_to_delete_task(task_list: &mut TaskList<String>) {
         io::stdout().flush();
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
-            Ok (_) => {
+            Ok(_) => {
                 let mut task_deleted = false;
                 match input.trim().parse::<usize>() {
-                    Ok (n) => 
-                    {
+                    Ok(n) => {
                         task_list.remove(n);
                         task_deleted = true;
                     }
-                    Err (err) => {
+                    Err(err) => {
                         println!("{}", err);
-                        continue
+                        continue;
                     }
                 }
                 if task_deleted {
                     break;
                 }
             }
-            Err (_) => continue,
+            Err(_) => continue,
         }
     }
 }
@@ -105,19 +102,17 @@ fn load_task_list() -> io::Result<TaskList<String>> {
     }
     match serde_json::from_str(contents.as_str()) {
         Ok(t) => Ok(t),
-        Err(err) => Ok(TaskList::<String>::new())
+        Err(err) => Ok(TaskList::<String>::new()),
     }
 }
 
-fn write_task_list (task_list: &TaskList<String>) -> io::Result<()> {
+fn write_task_list(task_list: &TaskList<String>) -> io::Result<()> {
     match serde_json::to_string(&task_list) {
-        Ok(s) => {
-            match fs::write(Config::get_task_file()?, s) {
-                Ok(_) => {},
-                Err(_) => {},
-            }
+        Ok(s) => match fs::write(Config::get_task_file()?, s) {
+            Ok(_) => {}
+            Err(_) => {}
         },
-        Err(_) => {},
+        Err(_) => {}
     }
     Ok(())
 }

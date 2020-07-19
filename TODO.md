@@ -13,11 +13,11 @@
 + delete a task
 + save on quit
 + load on run
++ cleanup loading/saving code
+  + better error handling too
 
 ### In Progress
 
 + mark a task as complete
 + view tasks
   + pending or completed
-+ cleanup loading/saving code
-  + better error handling too
