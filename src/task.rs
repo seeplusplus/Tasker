@@ -25,7 +25,7 @@ pub struct Task<T: Display> {
 }
 
 impl<T: Display> Task<T> {
-    fn create_task(from_task_description: T) -> Task<T> {
+    fn from(from_task_description: T) -> Task<T> {
         Task {
             status: TaskStatus::Pending,
             date_time_created: Local::now(),
@@ -54,7 +54,7 @@ impl<T: Display> TaskList<T> {
         }
     }
     pub fn add(&mut self, task_description: T) {
-        self.task_vec.push(Task::create_task(task_description));
+        self.task_vec.push(Task::from(task_description));
     }
     pub fn remove(&mut self, idx: usize) -> bool {
         println!("{}", idx);

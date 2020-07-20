@@ -1,17 +1,12 @@
 mod task;
 
-use chrono::offset::Local;
-use chrono::DateTime;
-
-use serde_json::json;
-
 use std::env;
-use std::fmt::Display;
+
 use std::fs;
 use std::io::{self, Write};
 use std::path;
 
-use task::{Task, TaskList};
+use task::TaskList;
 
 struct Config {}
 impl Config {
@@ -98,11 +93,11 @@ fn load_task_list() -> io::Result<TaskList<String>> {
     let contents: String;
     match fs::read_to_string(Config::get_task_file()?) {
         Ok(s) => contents = s,
-        Err(err) => contents = String::new(),
+        Err(_err) => contents = String::new(),
     }
     match serde_json::from_str(contents.as_str()) {
         Ok(t) => Ok(t),
-        Err(err) => Ok(TaskList::<String>::new()),
+        Err(_err) => Ok(TaskList::<String>::new()),
     }
 }
 
